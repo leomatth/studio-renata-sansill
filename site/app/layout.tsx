@@ -43,8 +43,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${bodoni.variable} ${jost.variable} ${pinyon.variable}`}>
-      <body>{children}</body>
+    // suppressHydrationWarning: extensões (ex.: Bitdefender) injetam atributos em <html>/<body>
+    <html
+      lang="pt-BR"
+      className={`${bodoni.variable} ${jost.variable} ${pinyon.variable}`}
+      suppressHydrationWarning
+    >
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

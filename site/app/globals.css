@@ -18,11 +18,22 @@
 
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root {
   color-scheme: light;
   scrollbar-color: var(--color-rose) var(--color-creme);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+section[id] {
+  scroll-margin-top: 4.5rem;
 }
 
 body {
@@ -75,17 +86,227 @@ p {
   transform: scale(0.97);
 }
 
-/* Retrato do hero: revela uma vez, de baixo para cima */
-.reveal-portrait {
-  animation: reveal-up 1100ms var(--ease-out-strong) 150ms both;
+/* Links de texto: o sublinhado ganha cor no hover */
+.text-link {
+  transition: text-decoration-color 200ms ease;
 }
 
-@keyframes reveal-up {
+/* =========================================================
+   Gramática de movimento
+   - linhas de título sobem por trás de uma máscara
+   - frases em script são "escritas" por uma cortina
+   - fotos abrem de baixo para cima e assentam (1.12 → 1)
+   - molduras rosé se desenham a partir do canto
+   ========================================================= */
+
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.line-inner {
+  display: block;
+}
+
+/* --- Hero: coreografia de entrada em CSS puro (não espera o JS) --- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-line {
+    animation: line-up 1000ms var(--ease-out-strong) both;
+    animation-delay: calc(180ms + var(--i, 0) * 110ms);
+  }
+
+  .hero-script {
+    animation: script-write 1500ms var(--ease-in-out-strong) 420ms both;
+  }
+
+  .hero-fade {
+    animation: rise 800ms var(--ease-out-strong) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  .hero-portrait {
+    animation: open-up 1300ms var(--ease-in-out-strong) 120ms both;
+  }
+
+  .hero-portrait-img {
+    animation: settle 1900ms var(--ease-out-strong) 120ms both;
+  }
+
+  .hero-frame {
+    animation: frame-draw 1400ms var(--ease-in-out-strong) 750ms both;
+  }
+}
+
+@keyframes line-up {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes script-write {
+  from {
+    clip-path: inset(-0.3em 100% -0.4em 0);
+  }
+  to {
+    clip-path: inset(-0.3em -0.3em -0.4em 0);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes open-up {
   from {
     clip-path: inset(100% 0 0 0);
   }
   to {
     clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes settle {
+  from {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes frame-draw {
+  from {
+    clip-path: inset(0 100% 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Parallax leve, guiado pela rolagem (roda fora da thread principal) */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax {
+      animation: drift linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(-4%);
+  }
+  to {
+    transform: translateY(4%);
+  }
+}
+
+/* --- Revelações na rolagem (RevealObserver marca data-visible) ---
+   Só escondem algo quando há JS para revelar. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal="lines"] .line-inner {
+    transform: translateY(105%);
+    transition: transform 950ms var(--ease-out-strong);
+    transition-delay: calc(var(--d, 0ms) + var(--i, 0) * 100ms);
+  }
+
+  [data-reveal="lines"][data-visible] .line-inner {
+    transform: none;
+  }
+
+  [data-reveal="fade"] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 800ms var(--ease-out-strong),
+      transform 800ms var(--ease-out-strong);
+    transition-delay: var(--d, 0ms);
+  }
+
+  [data-reveal="stagger"] > * {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 700ms var(--ease-out-strong),
+      transform 700ms var(--ease-out-strong);
+    transition-delay: calc(var(--d, 0ms) + var(--i, 0) * 60ms);
+  }
+
+  [data-reveal="fade"][data-visible],
+  [data-reveal="stagger"][data-visible] > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* O recorte vai sempre no filho: um elemento recortado a 100% tem área
+     zero e o IntersectionObserver nunca o veria entrar na tela. */
+  [data-reveal="image"] > * {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 1200ms var(--ease-in-out-strong);
+    transition-delay: var(--d, 0ms);
+  }
+
+  [data-reveal="image"] > * > * {
+    transform: scale(1.12);
+    transition: transform 1800ms var(--ease-out-strong);
+    transition-delay: var(--d, 0ms);
+  }
+
+  [data-reveal="image"][data-visible] > * {
+    clip-path: inset(0 0 0 0);
+  }
+
+  [data-reveal="image"][data-visible] > * > * {
+    transform: none;
+  }
+
+  [data-reveal="frame"] > * {
+    clip-path: inset(0 100% 100% 0);
+    transition: clip-path 1400ms var(--ease-in-out-strong);
+    transition-delay: calc(var(--d, 0ms) + 450ms);
+  }
+
+  [data-reveal="frame"][data-visible] > * {
+    clip-path: inset(0 0 0 0);
+  }
+
+  [data-reveal="script"] > * {
+    clip-path: inset(-0.3em 100% -0.4em 0);
+    transition: clip-path 1500ms var(--ease-in-out-strong);
+    transition-delay: var(--d, 0ms);
+  }
+
+  [data-reveal="script"][data-visible] > * {
+    clip-path: inset(-0.3em -0.3em -0.4em 0);
+  }
+}
+
+/* Movimento reduzido: só opacidade, sem deslocamento */
+@media (scripting: enabled) and (prefers-reduced-motion: reduce) {
+  [data-reveal="fade"],
+  [data-reveal="stagger"] > * {
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  [data-reveal="fade"][data-visible],
+  [data-reveal="stagger"][data-visible] > * {
+    opacity: 1;
+  }
+}
+
+/* Fotos da galeria: aproximação lenta no hover (só com mouse) */
+@media (hover: hover) and (pointer: fine) {
+  .zoom-on-hover img {
+    transition: transform 900ms var(--ease-out-strong);
+  }
+
+  .zoom-on-hover:hover img {
+    transform: scale(1.04);
   }
 }
 
@@ -122,23 +343,44 @@ p {
   }
 }
 
-/* Bubble do WhatsApp entra depois que a página assentou */
-.bubble-in {
-  animation: bubble-in 420ms var(--ease-out-strong) 1200ms both;
+/* Barra fixa: desce ao rolar para cima, sobe ao rolar para baixo */
+.sticky-nav {
+  transform: translateY(-100%);
+  transition: transform 220ms var(--ease-out-strong);
 }
 
-@keyframes bubble-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.92);
-  }
+.sticky-nav[data-shown="true"] {
+  transform: translateY(0);
+  transition: transform 420ms var(--ease-drawer);
+}
+
+/* Bubble do WhatsApp: aparece quando o CTA do hero sai da tela */
+.bubble {
+  opacity: 0;
+  transform: translateY(16px) scale(0.92);
+  pointer-events: none;
+  transition:
+    opacity 220ms var(--ease-out-strong),
+    transform 220ms var(--ease-out-strong),
+    background-color 200ms ease;
+}
+
+.bubble[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition:
+    opacity 380ms var(--ease-out-strong),
+    transform 380ms var(--ease-out-strong),
+    background-color 200ms ease;
+}
+
+.bubble[data-shown="true"]:active {
+  transform: scale(0.95);
+  transition-duration: 160ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal-portrait {
-    animation: none;
-  }
-
   .led-layer,
   .led-layer[data-active="true"] {
     clip-path: none;
@@ -154,8 +396,20 @@ p {
     animation-name: fade-only;
   }
 
-  .bubble-in {
-    animation-name: fade-only;
+  .sticky-nav,
+  .sticky-nav[data-shown="true"] {
+    transition: opacity 250ms ease;
+    transform: none;
+    opacity: 0;
+  }
+
+  .sticky-nav[data-shown="true"] {
+    opacity: 1;
+  }
+
+  .bubble,
+  .bubble[data-shown="true"] {
+    transform: none;
   }
 
   .press:active {
