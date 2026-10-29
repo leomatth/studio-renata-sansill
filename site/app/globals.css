@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-creme: #f7efeb;
+  --color-blush: #ebd5ce;
+  --color-blush-deep: #dfc0b6;
+  --color-vinho: #5e2337;
+  --color-vinho-deep: #45182a;
+  --color-ameixa: #3a1c27;
+  --color-ameixa-soft: #6e4a55;
+  --color-rose: #b8836a;
+  --color-rose-ink: #8c5a44;
+  --color-rose-light: #d9ae95;
+
+  --font-display: var(--font-bodoni);
+  --font-sans: var(--font-jost);
+  --font-script: var(--font-pinyon);
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+:root {
+  color-scheme: light;
+  scrollbar-color: var(--color-rose) var(--color-creme);
+}
+
+body {
+  background: var(--color-creme);
+  color: var(--color-ameixa);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-vinho);
+  color: var(--color-creme);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-rose-ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.on-vinho :focus-visible {
+  outline-color: var(--color-rose-light);
+}
+
+.on-vinho ::selection {
+  background: var(--color-rose-light);
+  color: var(--color-vinho-deep);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Botões: resposta imediata ao toque */
+.press {
+  transition:
+    transform 160ms var(--ease-out-strong),
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+.press:active {
+  transform: scale(0.97);
+}
+
+/* Retrato do hero: revela uma vez, de baixo para cima */
+.reveal-portrait {
+  animation: reveal-up 1100ms var(--ease-out-strong) 150ms both;
+}
+
+@keyframes reveal-up {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* LED: a foto que entra cobre a anterior como uma cortina de luz */
+.led-layer {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0s linear 750ms;
+  z-index: 1;
+}
+
+.led-layer[data-active="true"] {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 750ms var(--ease-in-out-strong);
+  z-index: 2;
+}
+
+.led-glow {
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+
+.led-glow[data-active="true"] {
+  opacity: 1;
+}
+
+.fade-in {
+  animation: fade-in 320ms var(--ease-out-strong) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Bubble do WhatsApp entra depois que a página assentou */
+.bubble-in {
+  animation: bubble-in 420ms var(--ease-out-strong) 1200ms both;
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-portrait {
+    animation: none;
+  }
+
+  .led-layer,
+  .led-layer[data-active="true"] {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+
+  .led-layer[data-active="true"] {
+    opacity: 1;
+  }
+
+  .fade-in {
+    animation-name: fade-only;
+  }
+
+  .bubble-in {
+    animation-name: fade-only;
+  }
+
+  .press:active {
+    transform: none;
+  }
+}
+
+@keyframes fade-only {
+  from {
+    opacity: 0;
+  }
+}
