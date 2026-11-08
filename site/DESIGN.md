@@ -16,13 +16,14 @@ Sistema derivado do cartaz oficial da cliente. Tokens em `app/globals.css` (`@th
 O vinho ocupa faixas inteiras, de ponta a ponta. O rosé nunca vira fundo.
 
 ## Tipografia
-- **Bodoni Moda** (`font-display`): títulos, nomes de protocolo, itens de lista de benefício. Tracking negativo leve nos tamanhos grandes.
+- **Bodoni Moda** (`font-display`): títulos, nomes de protocolo, itens de lista de benefício. Peso 600 e `opsz` fixo em 11 (no automático, as hairlines somem nos tamanhos grandes e o título fica apagado). Tracking negativo leve nos tamanhos grandes.
 - **Jost** (`font-sans`): corpo, botões, rótulos em caixa-alta com tracking de 0.12–0.18em.
 - **Pinyon Script** (`font-script`): só frases-assinatura ("melhor versão", "avaliação", "Sua beleza, minha missão!"). Nunca em texto corrido.
 
 ## Composição
 - Container `max-w-6xl`, grid de 12 colunas a partir de `md`.
-- Fotos com moldura de linha fina rosé deslocada (`-inset-3` + translate). Sem cantos arredondados nas fotos; pílulas só em botões e chips.
+- Forma-assinatura: o **arco** (`.arch`, topo em semicírculo) em todas as fotos principais, com moldura concêntrica de linha fina (`.arch-frame`, 12px para fora, sem base). Galeria "Dentro do studio" como colunata: três arcos alinhados pela base, o do meio mais alto. Pílulas só em botões e chips.
+- Protocolos têm um índice de chips logo abaixo do título, com âncora para cada um.
 - Listas com linhas finas no lugar de cards.
 
 ## Movimento

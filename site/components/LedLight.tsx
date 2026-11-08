@@ -100,15 +100,9 @@ export function LedLight() {
         </div>
 
         <div className="md:col-span-5 md:col-start-8">
-          <div className="relative mx-auto max-w-[400px] md:mr-0">
-            <div
-              aria-hidden="true"
-              data-reveal="frame"
-              className="absolute inset-0 translate-x-4 translate-y-4"
-            >
-              <span className="absolute inset-0 border border-rose/60" />
-            </div>
-            <div data-reveal="image" className="relative aspect-[4/5] overflow-hidden">
+          <div className="relative mx-auto w-[86%] max-w-[400px] md:mr-3">
+            <span aria-hidden="true" className="arch-frame text-rose/70" />
+            <div data-reveal="image" className="arch relative aspect-[3/4] overflow-hidden">
               <div className="absolute inset-0">
                 {modes.map((m) => (
                   <Image
@@ -124,7 +118,7 @@ export function LedLight() {
               </div>
             </div>
           </div>
-          <p className="mx-auto mt-9 max-w-[400px] text-sm text-ameixa-soft md:mr-0">
+          <p className="mx-auto mt-6 w-[86%] max-w-[400px] text-sm text-ameixa-soft md:mr-3">
             Na foto: protocolo com PDRN, potencializado pela LED.
           </p>
         </div>

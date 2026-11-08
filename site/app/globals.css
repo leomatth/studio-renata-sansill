@@ -69,6 +69,30 @@ h3 {
   text-wrap: balance;
 }
 
+/* Bodoni em tamanho grande fica com hairlines quase invisíveis no tamanho
+   óptico automático. Peso 500 e opsz fixo deixam os títulos firmes sem perder
+   o contraste da marca. */
+@layer utilities {
+  .font-display {
+    font-weight: 600;
+    font-variation-settings: "opsz" 11;
+  }
+}
+
+/* Forma-assinatura: o arco (portal) nas fotos e a moldura concêntrica rosé. */
+.arch {
+  border-radius: 999px 999px 0 0;
+}
+
+.arch-frame {
+  position: absolute;
+  inset: -12px;
+  border: 1px solid currentColor;
+  border-radius: 999px 999px 0 0;
+  border-bottom: 0;
+  pointer-events: none;
+}
+
 p {
   text-wrap: pretty;
 }

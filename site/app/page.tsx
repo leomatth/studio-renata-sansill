@@ -38,6 +38,7 @@ export default function Home() {
       <StickyNav items={nav} />
       <Hero />
       <main>
+        <Credentials />
         <LedLight />
         <Protocols />
         <About />
@@ -78,9 +79,9 @@ function Hero() {
         </nav>
       </div>
 
-      <div className="mx-auto grid max-w-6xl gap-14 px-4 pt-8 pb-20 sm:px-6 md:grid-cols-12 md:items-center md:gap-x-8 md:pt-12 md:pb-28">
-        <div className="md:col-span-7">
-          <h1 className="font-display text-[clamp(3.25rem,7.5vw,6rem)] leading-[0.95] tracking-[-0.03em]">
+      <div className="mx-auto grid max-w-6xl gap-14 px-4 pt-8 pb-20 sm:px-6 md:grid-cols-12 md:items-center md:gap-x-8 md:pt-10 md:pb-24">
+        <div className="md:col-span-6">
+          <h1 className="font-display text-[clamp(3.25rem,7.5vw,6.5rem)] leading-[0.95] tracking-[-0.03em]">
             <span className="line">
               <span className="line-inner hero-line" style={index(0)}>
                 Realce sua
@@ -135,27 +136,24 @@ function Hero() {
           </p>
         </div>
 
-        <div className="md:col-span-4 md:col-start-9">
-          <div className="mx-auto w-[88%] max-w-[380px] md:mr-4 md:w-full">
+        <div className="md:col-span-6 md:col-start-7">
+          <div className="mx-auto w-[86%] max-w-[500px] md:mr-3 md:w-[92%]">
             <div className="relative">
-            <div
-              aria-hidden="true"
-              className="hero-frame absolute inset-0 translate-x-3 translate-y-3 border border-rose-light/50 md:translate-x-4 md:translate-y-4"
-            />
-            <div className="hero-portrait relative aspect-[4/5] overflow-hidden bg-vinho-deep">
-              <div className="parallax absolute inset-x-0 -inset-y-[5%]">
-                <Image
-                  src={renataRetrato}
-                  alt="Renata Sansill sorrindo, de óculos e blazer claro"
-                  fill
-                  sizes="(min-width: 768px) 380px, 88vw"
-                  placeholder="blur"
-                  fetchPriority="high"
-                  loading="eager"
-                  className="hero-portrait-img object-cover object-top"
-                />
+              <span aria-hidden="true" className="arch-frame hero-frame text-rose-light/55" />
+              <div className="hero-portrait arch relative aspect-[4/5] overflow-hidden bg-vinho-deep">
+                <div className="parallax absolute inset-x-0 -inset-y-[5%]">
+                  <Image
+                    src={renataMassagem}
+                    alt="Renata, de jaleco branco, fazendo massagem facial em uma cliente"
+                    fill
+                    sizes="(min-width: 768px) 500px, 86vw"
+                    placeholder="blur"
+                    fetchPriority="high"
+                    loading="eager"
+                    className="hero-portrait-img object-cover"
+                  />
+                </div>
               </div>
-            </div>
             </div>
             <p
               className="hero-fade mt-10 text-right font-script text-3xl text-rose-light md:text-[2.1rem]"
@@ -170,6 +168,27 @@ function Hero() {
   );
 }
 
+// Faixa de confiança: só fatos que a Renata já confirmou (briefing/marca.md).
+function Credentials() {
+  const facts = [
+    { big: "20+ anos", text: "na área da beleza" },
+    { big: "Biomedicina", text: "graduanda, além de esteticista e terapeuta capilar" },
+    { big: "Sob medida", text: "cada protocolo começa por uma avaliação da sua pele" },
+  ];
+  return (
+    <section aria-label="Sobre a Renata em números" className="on-vinho border-t border-rose-light/20 bg-vinho-deep text-creme">
+      <ul data-reveal="stagger" className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:gap-10 sm:px-6">
+        {facts.map((f, i) => (
+          <li key={f.big} style={index(i)} className="sm:border-l sm:border-rose-light/25 sm:pl-6 sm:first:border-l-0 sm:first:pl-0">
+            <p className="font-display text-3xl text-rose-light">{f.big}</p>
+            <p className="mt-2 max-w-[28ch] leading-relaxed text-creme/80">{f.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function Protocols() {
   return (
     <section id="protocolos" className="bg-blush py-24 md:py-36">
@@ -179,7 +198,22 @@ function Protocols() {
           className="font-display text-4xl leading-[1.05] tracking-[-0.02em] text-vinho sm:text-5xl lg:text-6xl"
         />
 
-        <div className="mt-16 flex flex-col gap-24 md:mt-24 md:gap-32">
+        <nav aria-label="Protocolos" data-reveal="fade" style={delay(250)} className="mt-10">
+          <ul className="flex flex-wrap gap-2">
+            {protocols.map((protocol) => (
+              <li key={protocol.id}>
+                <a
+                  href={`#${protocol.id}`}
+                  className="press inline-block rounded-full border border-vinho/30 px-4 py-2 text-sm text-vinho [@media(hover:hover)]:hover:border-vinho [@media(hover:hover)]:hover:bg-vinho [@media(hover:hover)]:hover:text-creme"
+                >
+                  {protocol.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="mt-20 flex flex-col gap-24 md:mt-28 md:gap-36">
           {protocols.map((protocol, i) => (
             <ProtocolRow key={protocol.id} protocol={protocol} flip={i % 2 === 1} />
           ))}
@@ -206,13 +240,17 @@ function ProtocolRow({ protocol, flip }: { protocol: Protocol; flip: boolean }) 
   const isVideo = media.kind === "video";
 
   return (
-    <article className="grid gap-10 md:grid-cols-12 md:items-center md:gap-8">
-      <div className={`md:col-span-5 ${flip ? "md:order-2 md:col-start-8" : ""}`}>
+    <article id={protocol.id} className="grid scroll-mt-24 gap-12 md:grid-cols-12 md:items-center md:gap-8">
+      <div className={`md:col-span-6 ${flip ? "md:order-2 md:col-start-7" : ""}`}>
+        <div
+          className={`relative mx-auto w-[86%] ${
+            isVideo ? "max-w-[340px]" : "max-w-[460px]"
+          } ${flip ? "md:mr-3" : "md:ml-3"}`}
+        >
+        <span aria-hidden="true" className="arch-frame text-vinho/30" />
         <div
           data-reveal="image"
-          className={`relative mx-auto w-full overflow-hidden ${
-            isVideo ? "aspect-[9/16] max-w-[280px]" : "aspect-[3/4] max-w-[340px]"
-          } ${flip ? "md:mr-0" : "md:ml-0"}`}
+          className={`arch relative w-full overflow-hidden ${isVideo ? "aspect-[9/16]" : "aspect-[3/4]"}`}
         >
           <div className="absolute inset-0">
             {media.kind === "video" ? (
@@ -229,9 +267,10 @@ function ProtocolRow({ protocol, flip }: { protocol: Protocol; flip: boolean }) 
             )}
           </div>
         </div>
+        </div>
       </div>
 
-      <div className={`md:col-span-6 ${flip ? "md:order-1 md:col-start-1" : "md:col-start-7"}`}>
+      <div className={`md:col-span-5 ${flip ? "md:order-1 md:col-start-1" : "md:col-start-8"}`}>
         <RevealLines
           as="h3"
           lines={[protocol.name]}
@@ -279,23 +318,17 @@ function About() {
     <section id="sobre" className="bg-creme py-24 md:py-36">
       <div className="mx-auto grid max-w-6xl gap-14 px-4 sm:px-6 md:grid-cols-12 md:items-center md:gap-8">
         <div className="md:col-span-5 lg:col-span-4">
-          <div className="relative mx-auto w-[88%] max-w-[380px] md:ml-0 md:w-full">
-            <div
-              aria-hidden="true"
-              data-reveal="frame"
-              className="absolute inset-0 translate-x-4 translate-y-4"
-            >
-              <span className="absolute inset-0 border border-rose/60" />
-            </div>
-            <div data-reveal="image" className="relative aspect-[3/4] overflow-hidden">
+          <div className="relative mx-auto w-[80%] max-w-[380px] md:ml-3 md:w-[90%]">
+            <span aria-hidden="true" className="arch-frame text-rose/70" />
+            <div data-reveal="image" className="arch relative aspect-[3/4] overflow-hidden">
               <div className="absolute inset-0">
                 <Image
-                  src={renataMassagem}
-                  alt="Renata, de jaleco branco, fazendo massagem facial em uma cliente"
+                  src={renataRetrato}
+                  alt="Renata Sansill sorrindo, de óculos e blazer claro"
                   fill
                   sizes="(min-width: 768px) 380px, 88vw"
                   placeholder="blur"
-                  className="object-cover"
+                  className="object-cover object-top"
                 />
               </div>
             </div>
@@ -319,7 +352,7 @@ function About() {
           <blockquote
             data-reveal="fade"
             style={delay(250)}
-            className="mt-8 max-w-[46ch] border-t border-rose/50 pt-6 text-lg leading-relaxed text-ameixa-soft"
+            className="mt-10 max-w-[30ch] border-l-2 border-rose pl-6 font-display text-2xl leading-snug text-vinho italic md:text-[1.75rem]"
           >
             “Sou apaixonada por transformar vidas e elevar a autoestima, sempre com cuidado, carinho e
             propósito.”
@@ -344,21 +377,22 @@ function About() {
 }
 
 function Studio() {
+  // Colunata: três arcos alinhados pela base, o do meio mais alto.
   const gallery = [
-    {
-      src: ledVermelho,
-      alt: "Cliente relaxando sob a luz vermelha da LED terapia",
-      className: "col-span-2 aspect-[4/5] md:col-span-4 md:row-span-2 md:aspect-auto",
-    },
     {
       src: mascaraDetalhe,
       alt: "Máscara facial sendo ajustada sob o vapor",
-      className: "aspect-square md:col-span-4 md:aspect-auto",
+      className: "aspect-[3/4]",
+    },
+    {
+      src: ledVermelho,
+      alt: "Cliente relaxando sob a luz vermelha da LED terapia",
+      className: "aspect-[3/5]",
     },
     {
       src: altaFrequenciaAzul,
       alt: "Alta frequência aplicada sob luz azul",
-      className: "aspect-square md:col-span-4 md:aspect-auto",
+      className: "aspect-[3/4]",
     },
   ];
 
@@ -368,22 +402,22 @@ function Studio() {
         <RevealLines
           id="studio-titulo"
           lines={["Dentro do studio"]}
-          className="font-display text-3xl text-vinho md:text-4xl"
+          className="text-center font-display text-4xl text-vinho md:text-5xl"
         />
-        <div className="mt-8 grid grid-cols-2 gap-3 md:h-[520px] md:grid-cols-8 md:grid-rows-2 md:gap-4">
+        <div className="mt-12 grid grid-cols-3 items-end gap-3 sm:gap-6 md:gap-10">
           {gallery.map((photo, i) => (
             <div
               key={photo.alt}
               data-reveal="image"
               style={delay(i * 120)}
-              className={`zoom-on-hover relative overflow-hidden ${photo.className}`}
+              className={`zoom-on-hover arch relative overflow-hidden ${photo.className}`}
             >
               <div className="absolute inset-0 overflow-hidden">
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   fill
-                  sizes="(min-width: 768px) 560px, 100vw"
+                  sizes="(min-width: 768px) 300px, 33vw"
                   placeholder="blur"
                   className="object-cover"
                 />
